@@ -1,7 +1,7 @@
 import {parse as _parse, relative, join} from "path"
 import {curry, binary} from "panda-garden"
 import {include} from "panda-parchment"
-import {exists, mkdir, mkdirp, isDirectory, write as _write} from "panda-quill"
+import {exists, mkdirp, isDirectory, write as _write} from "panda-quill"
 import {shell} from "fairmont-process"
 
 # Make a directory at the specified path if it doesn't already exist.
@@ -11,7 +11,7 @@ safe_mkdir = (path, mode) ->
     return
 
   mode ||= "0777"
-  await mkdir mode, path
+  await mkdirp mode, path
 
 # Copy a file to the target, but only if it doesn't already exist.
 safe_cp = (original, target) ->

@@ -1,10 +1,11 @@
 import coffee from "./coffee"
-# import passthrough from "./passthrough"
-# import javascript from "./javascript"
+#import javascript from "./javascript"
+#import passthrough from "./passthrough"
 
-transpile = ->
-  await coffee()
-  # await passthrough()
-  # await javascript()
+
+transpile = (source, target) ->
+  await coffee source, target
+  #await javascript()
+  #await passthrough()
 
 export default transpile

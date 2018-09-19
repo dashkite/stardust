@@ -32,10 +32,8 @@ render = ({source, target}) ->
     console.error e
     process.exit -1
 
-transpile = ->
+transpile = (sourceDir, targetDir) ->
   try
-    sourceDir = "src"
-    targetDir = "lib"
     await go [
       (await glob "**/*.coffee", sourceDir)
       map context sourceDir
