@@ -1,0 +1,46 @@
+{
+  "name": "dashkite-stardust",
+  "version": "0.0.1",
+  "description": "Serverless Framework for Load Testing Simulations",
+  "main": "./build/npm/src/cli.js",
+  "files": [
+    "bin",
+    "build/npm",
+    "LICENSE",
+    "README.md",
+    "schema",
+    "templates"
+  ],
+  "bin": {
+    "stardust": "./bin/stardust"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dashkite/stardust.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dashkite/stardust/issues"
+  },
+  "homepage": "https://github.com/dashkite/stardust#readme",
+  "devDependencies": {
+    "gulp": "github:gulpjs/gulp#4.0",
+    "panda-builder": "^2.1.0"
+  },
+  "dependencies": {
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-async-generator-functions": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "coffeescript": "^2.3.1",
+    "commander": "^2.18.0",
+    "fairmont-process": "^2.0.0",
+    "moment": "^2.22.2",
+    "moment-duration-format": "^2.2.2",
+    "panda-garden": "^3.0.2",
+    "panda-parchment": "^4.0.2",
+    "panda-quill": "^3.0.0",
+    "panda-river": "^4.0.1"
+  }
+}
