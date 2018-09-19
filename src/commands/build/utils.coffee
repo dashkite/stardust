@@ -1,6 +1,6 @@
-import {parse, relative, join} from "path"
+import {parse as _parse, relative, join} from "path"
 import {curry, binary} from "panda-garden"
-import {include} from "panda-river"
+import {include} from "panda-parchment"
 import {exists, mkdir, mkdirp, isDirectory, write as _write} from "panda-quill"
 import {shell} from "fairmont-process"
 
@@ -23,6 +23,13 @@ safe_cp = (original, target) ->
     await shell "cp -R #{original} #{target}"
   else
     await shell "cp #{original} #{target}"
+
+parse = (path) ->
+  {dir, name, ext} = _parse path
+  path: path
+  directory: dir
+  name: name
+  extension: ext
 
 context = curry (_directory, _path) ->
   {path, directory, name, extension} = parse _path

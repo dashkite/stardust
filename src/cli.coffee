@@ -1,7 +1,7 @@
 import program from "commander"
 
 import "./index"
-import {bellChar, getVersions, stopwatch} from "./utils"
+import {bellChar, getVersion, stopwatch} from "./utils"
 import Commands from "./commands"
 
 do ->

@@ -2,7 +2,7 @@ import {resolve} from "path"
 import coffee from "coffeescript"
 import "babel-preset-env"
 
-import {go, map, tee, reject, include, wait} from "panda-river"
+import {go, map, tee, reject, wait} from "panda-river"
 import {Type, isType} from "panda-parchment"
 import {glob, read} from "panda-quill"
 import {Method} from "panda-generics"
@@ -16,7 +16,7 @@ render = ({source, target}) ->
   try
     source.content ?= await read source.path
 
-    env = resolve __dirname, "..", "..", "..", "..", "..", "node_modules", "babel-preset-env"
+    env = resolve __dirname, "..", "..", "..", "..", "..", "..", "node_modules", "babel-preset-env"
     target.content = coffee.compile source.content,
       filename: source.name + source.extension
       inlineMap: true
@@ -34,15 +34,15 @@ render = ({source, target}) ->
 
 transpile = ->
   try
-    source = "src"
-    target = "lib"
+    sourceDir = "src"
+    targetDir = "lib"
     await go [
-      glob "**/*.coffee", source
-      map context source
+      (await glob "**/*.coffee", sourceDir)
+      map context sourceDir
       tee ({target}) -> target.extension = ".js"
       tee render
       wait
-      tee write target
+      tee write targetDir
     ]
   catch e
     console.error e.stack

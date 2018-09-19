@@ -41,6 +41,6 @@
     "panda-garden": "^3.0.2",
     "panda-parchment": "^4.0.2",
     "panda-quill": "^3.0.0",
-    "panda-river": "^4.0.1"
+    "panda-river": "4.0.1"
   }
 }
