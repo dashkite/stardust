@@ -3,10 +3,10 @@ import {exists} from "panda-quill"
 
 import {safe_mkdir} from "./utils"
 import transpile from "./transpile"
-import readConfiguration from "../../configuration"
+import {scan} from "../../configuration"
 
 command = (stopwatch) ->
-  config = await readConfiguration()
+  config = await scan()
   {source} = config
   target = "stardust/lib"
   manifest = "package.json"

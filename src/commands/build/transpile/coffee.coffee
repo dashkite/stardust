@@ -1,6 +1,6 @@
 import {resolve} from "path"
 import coffee from "coffeescript"
-import "babel-preset-env"
+import "@babel/preset-env"
 
 import {go, map, tee, reject, wait} from "panda-river"
 import {Type, isType} from "panda-parchment"
@@ -16,7 +16,7 @@ render = ({source, target}) ->
   try
     source.content ?= await read source.path
 
-    env = resolve __dirname, "..", "..", "..", "..", "..", "..", "node_modules", "babel-preset-env"
+    env = resolve __dirname, "..", "..", "..", "..", "..", "..", "node_modules", "@babel/preset-env"
     target.content = coffee.compile source.content,
       filename: source.name + source.extension
       inlineMap: true

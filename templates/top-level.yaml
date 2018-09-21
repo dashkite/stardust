@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "{{env}} {{name}} - Stardust Simulations"
+Resources:
+  StardustCore:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      {{#with aws.vpc}}
+      Parameters:
+        SecurityGroups: {{securityGroups}}
+        Subnets: {{subnets}}
+      {{/with}}
+      Tags:
+        - Key: Substack Type
+          Value: Core
+        {{#each tags}}
+        - Key: {{Key}}
+          Value: {{Value}}
+        {{/each}}
+      TemplateURL: "https://{{environmentVariables.starBucket}}.s3.amazonaws.com/templates/core/index.yaml"

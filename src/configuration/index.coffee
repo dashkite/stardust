@@ -1,10 +1,14 @@
 import {resolve} from "path"
+import SDK from "aws-sdk"
+import Sundog from "sundog"
 import JSCK from "jsck"
 import {safeLoad as load} from "js-yaml"
 import {read, exists} from "panda-quill"
 
+import preprocess from "./preprocess"
+
 schemaPath = (name) ->
-  resolve __dirname, "..", "..", "..", "schema", name
+  resolve __dirname, "..", "..", "..", "..", "schema", name
 
 getSchema = ->
   schema = load await read schemaPath "configuration.yaml"
@@ -28,6 +32,16 @@ failValidation = (errors) ->
   console.error errors
   process.exit -1
 
+compile = (env, profile="default") ->
+  config = await scan()
+  SDK.config =
+     credentials: new SDK.SharedIniFileCredentials {profile}
+     region: "us-west-2"
+     sslEnabled: true
+  config.sundog = Sundog(SDK).AWS
+  config.env = env
+  await preprocess config
+
 scan = ->
   jsck = new JSCK.draft4 await getSchema()
   config = await readConfiguration()
@@ -36,4 +50,4 @@ scan = ->
   failValidation errors if !valid
   config
 
-export default scan
+export {compile, scan}

@@ -22,6 +22,20 @@ do ->
     .command "build"
     .action (options) -> Commands.build stopwatch()
 
+  program
+    .command "render [env]"
+    .option '-p, --profile [profile]', 'Name of AWS profile to use'
+    .action (env, options) ->
+      return if noEnv env
+      Commands.render env, options
+
+  program
+    .command "publish [env]"
+    .option '-p, --profile [profile]', 'Name of AWS profile to use'
+    .action (env, options) ->
+      return if noEnv env
+      Commands.publish stopwatch(), env, options
+
   program.help = -> console.log Commands.help
 
   # Begin execution.
