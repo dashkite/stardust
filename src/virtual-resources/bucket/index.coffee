@@ -14,7 +14,7 @@ Metadata = class Metadata
     @pkg = @config.aws.stack.pkg
     @starDef = @config.aws.stack.starDef
     @templates = @config.aws.templates
-    @s3 = @config.sundog.S3
+    @s3 = @config.sundog.S3()
 
   initialize: ->
     try
@@ -22,11 +22,6 @@ Metadata = class Metadata
       @cloudformationParameters =
         StackName: @name
         TemplateURL: "https://#{@src}.s3.amazonaws.com/template.yaml"
-        Capabilities: ["CAPABILITY_IAM"]
-        Tags: @config.tags
-      @intermediateCloudformationParameters =
-        StackName: @name
-        TemplateURL: "https://#{@src}.s3.amazonaws.com/template-intermediate.yaml"
         Capabilities: ["CAPABILITY_IAM"]
         Tags: @config.tags
     catch e
@@ -40,36 +35,38 @@ Metadata = class Metadata
 
     update: => await @s3.put @src, "package.zip", @pkg, false
 
+  permissions: =>
+    isCurrent: =>
+      local = md5 toJSON @config.policyStatements
+      if local == @metadata.permissions then true else false
+
+    update: => await @s3.put @src, "permissions.json", toJSON(@config.policyStatements), "text/json"
+
   starConfig: =>
     isCurrent: =>
       local = md5 await read @starDef
       if local == @metadata.stardust then true else false
 
-    update: => await @s3.put @src, "sky.yaml", @starDef, false
+    update: => await @s3.put @src, "stardust.yaml", @starDef, false
 
   stacks: =>
     update: =>
-      # # Upload the root stack...
-      # await @s3.put @src, "template.yaml", (yaml @templates.root), "text/yaml"
-      #
-      # # Now the intermediate based off of the root.
-      # intermediate = clone @templates.root
-      # intermediate.Resources.SkyCore.Properties.TemplateURL = "https://#{@src}.s3.amazonaws.com/templates/core/intermediate.yaml"
-      # await @s3.put @src, "template-intermediate.yaml", (yaml intermediate), "text/yaml"
-      #
-      # # Now all the nested children...
-      # for key, stack of @templates.core
-      #   await @s3.put @src, "templates/#{key}", stack, "text/yaml"
-      # for key, stack of @templates.mixins
-      #   await @s3.put @src, "templates/mixins/#{key}.yaml", stack, "text/yaml"
+      # Upload the root stack...
+      await @s3.put @src, "template.yaml", (yaml @templates.root), "text/yaml"
+
+      # Now all the nested children...
+      for key, stack of @templates.core
+        await @s3.put @src, "templates/#{key}", stack, "text/yaml"
+      for key, stack of @templates.mixins
+        await @s3.put @src, "templates/mixins/#{key}.yaml", stack, "text/yaml"
 
   needsUpdate: ->
     # Examine core stack resources to update the CloudFormation stack.
-    dirtyAPI = !(await @api().isCurrent()) || !(await @starConfig().isCurrent()) || !@permissions().isCurrent()
+    dirtyStack = !(await @starConfig().isCurrent()) || !@permissions().isCurrent()
 
     # See if lambda handlers are up to date.
-    dirtyLambda = !(await @handlers().isCurrent())
-    {dirtyAPI, dirtyLambda}
+    dirtyStack = !(await @handlers().isCurrent())
+    {dirtyStack, dirtyLambda}
 
   create: ->
     await @s3.bucketTouch @src
@@ -81,11 +78,10 @@ Metadata = class Metadata
       await @s3.bucketEmpty @src
       await @s3.bucketDel @src
     else
-      console.warn "No Sky metadata detected for this deployment. Moving on..."
+      console.warn "No Stardust metadata detected for this deployment. Moving on..."
 
   # This updates the contents of the bucket, but not the state MD5 hashes.
   sync: ->
-    await @api().update()
     await @starConfig().update()
     await @handlers().update()
     await @permissions().update()
@@ -102,9 +98,8 @@ Metadata = class Metadata
 
   syncState: (endpoint) ->
     data =
-      api: md5 await read @apiDef
       handlers: md5 (await read @pkg, "buffer")
-      sky: md5 await read @starDef
+      stardust: md5 await read @starDef
       permissions: md5 toJSON @config.policyStatements
       endpoint: endpoint
 

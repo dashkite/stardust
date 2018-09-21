@@ -1,9 +1,9 @@
 import {resolve} from "path"
 import SDK from "aws-sdk"
-import Sundog from "sundog"
 import JSCK from "jsck"
 import {safeLoad as load} from "js-yaml"
 import {read, exists} from "panda-quill"
+import {merge} from "panda-parchment"
 
 import preprocess from "./preprocess"
 
@@ -33,13 +33,7 @@ failValidation = (errors) ->
   process.exit -1
 
 compile = (env, profile="default") ->
-  config = await scan()
-  SDK.config =
-     credentials: new SDK.SharedIniFileCredentials {profile}
-     region: "us-west-2"
-     sslEnabled: true
-  config.sundog = Sundog(SDK).AWS
-  config.env = env
+  config = merge (await scan()), {env, profile}
   await preprocess config
 
 scan = ->

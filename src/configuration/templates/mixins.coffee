@@ -42,7 +42,6 @@ finishTemplate = (resources, name, vpc) ->
 
 # Mixins have their own configuration schema and templates.  Validation and rendering is handled internally.  Just accept what we get back.  Not every mixin will actually need to deploy resources in this stack, so only index them if they do.
 renderMixins = (config) ->
-  console.log JSON.stringify config
   bucket = config.environmentVariables.starBucket
   SDK.config =
     credentials: new SDK.SharedIniFileCredentials {profile: config.profile}

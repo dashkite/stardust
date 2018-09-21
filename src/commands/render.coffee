@@ -1,11 +1,13 @@
 import {bellChar} from "../utils"
 import {compile} from "../configuration"
 import Stack from "../virtual-resources/stack"
+import {yaml} from "panda-serialize"
 
 command = (env, options) ->
   try
     console.log "Gathering configuration for dry run..."
     config = await compile env, options.profile
+    console.log yaml config.aws.templates.root
     for key, stack of config.aws.templates.core
       console.log "=".repeat 80
       console.log "templates/#{key}"

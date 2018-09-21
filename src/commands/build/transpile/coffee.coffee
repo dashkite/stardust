@@ -35,7 +35,7 @@ render = ({source, target}) ->
 transpile = (sourceDir, targetDir) ->
   try
     await go [
-      (await glob "**/*.coffee", sourceDir)
+      await glob "**/*.coffee", sourceDir
       map context sourceDir
       tee ({target}) -> target.extension = ".js"
       tee render

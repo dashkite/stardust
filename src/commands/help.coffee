@@ -12,8 +12,9 @@ help = """
   Commands:
 
     build     Compile and package the loadtest code for deploy
-
-
+    delete
+    publish
+    render
   """
 
 export default help

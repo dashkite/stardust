@@ -27,10 +27,7 @@ nameKey = (path) -> relative (resolve root, "templates", "stacks"), path
 renderCore = (config) ->
   core = {}
   stacks = await lsR tPath "stacks/core"
-  console.log JSON.stringify config.policyStatements, null, 2
-  console.log stacks
   for s in stacks when parse(s).ext == ".yaml"
-    console.log s
     core[nameKey s] = render (await registerTemplate s), config
   core
 

@@ -5,25 +5,27 @@ import questions from "./questions"
 
 Stack = class Stack
   constructor: (@config) ->
-    @sundog = @config.sundog
     @stack = @config.aws.stack
-    @cfo = @sundog.CloudFormation
-    @eni = @sundog.EC2.ENI
+    @regions = @config.environment.regions
+    @CFO = @config.sundog.CloudFormation
+    #@ENI = @sundog.EC2.ENI
 
   initialize: ->
     @bucket = await Bucket @config
+    @handlers = await Handlers @config
 
   delete: ->
-    if @config.aws.vpc?.skipConnectionDraining
-      await @eni.purge (await @getSubnets()),
-        (eni) -> ///#{@stack.name}///.test eni.RequesterId
-    await @cfo.delete @stack.name
+    # if @config.aws.vpc?.skipConnectionDraining
+    #   await @eni.purge (await @getSubnets()),
+    #     (eni) -> ///#{@stack.name}///.test eni.RequesterId
+    await Promise.all do =>
+      @CFO({region}).delete @stack.name for region in @regions
     await @bucket.delete()
 
-  getSubnets: -> (await @cfo.output "Subnets", name).split ","
+  #getSubnets: -> (await @cfo.output "Subnets", name).split ","
 
   # Ask politely if a stack override is neccessary.
-  override: ->
+  override: (region) ->
     try
       {ask} = new Interview()
       answers = await ask questions @stack.name
@@ -33,8 +35,8 @@ Stack = class Stack
       process.exit()
 
     if answers.override
-      console.log "Attempting to remove non-Sky stack..."
-      await @cfo.delete @stack.name
+      console.log "Attempting to remove non-Stardust stack..."
+      await @CFO({region}).delete @stack.name
       console.log "Removal complete.  Continuing with publish."
     else
       console.warn "Discontinuing publish."
@@ -43,35 +45,38 @@ Stack = class Stack
 
   newPublish: ->
     console.log "Waiting for new stack publish to complete..."
+
     await @bucket.create()
-    await @cfo.create @bucket.cloudformationParameters
-    await @bucket.syncState await @getEndpoint()
+    await Promise.all do =>
+      for region in @regions
+        @CFO({region}).create @bucket.cloudformationParameters
+    await @bucket.syncState()
 
   updatePublish: ->
-    {dirtyAPI, dirtyLambda} = await @bucket.needsUpdate()
-    if !dirtyAPI && !dirtyLambda
-      console.warn "The Sky deployment is already up to date."
+    {dirtyStack, dirtyLambda} = await @bucket.needsUpdate()
+    if !dirtyStack && !dirtyLambda
+      console.warn "Stardust deployment already up to date."
       return
 
     @bucket.sync()
-    if dirtyAPI
-      console.log "Removing obsolete resources..."
-      await @cfo.update @bucket.intermediateCloudformationParameters
+    if dirtyStack
       console.log "Waiting for stack update to complete..."
-      await @cfo.update @bucket.cloudformationParameters
+      await Promise.all do =>
+        for region in @regions
+          @CFO({region}).update @bucket.cloudformationParameters
     if dirtyLambda
       console.log "Updating deployment lambdas..."
       await @handlers.update()
-    await @bucket.syncState await @getEndpoint()
+    await @bucket.syncState()
 
   publish: ->
     if @bucket.metadata
       await @updatePublish()
     else
-      await @override() if (await @cfo.get @stack.name)
+      for region in @regions when (await @CFO({region}).get @stack.name)
+        await @override region
       await @newPublish()
-    console.log "Your API is online and ready at the following endpoint:"
-    console.log "  #{await @getEndpoint()}"
+    console.log "Your simulation array is online and running."
 
 stack = (config) ->
   S = new Stack config

@@ -4,6 +4,8 @@ title: Stardust Configuration Description
 type: object
 required:
   - source
+  - name
+  - projectID
 properties:
   source:
     type: string
@@ -25,7 +27,7 @@ properties:
       deployment, this ID is part of the name.  This is generated for you
       when you use 'sky init', or you may provide your own.
     type: string
-    
+
   tags:
     description: >
       Optional tags attached to your deployed resources when possible to make

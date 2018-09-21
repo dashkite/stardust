@@ -1,6 +1,0 @@
-AWSTemplateFormatVersion: "2010-09-09"
-Description: Stardust - CloudWatch Event and associated Lambda Permissions
-Resources:
-  {{#each simulations}}
-  {{> lambda-trigger}}
-  {{/each}}

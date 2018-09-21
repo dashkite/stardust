@@ -28,23 +28,3 @@ Resources:
           Value: {{Value}}
         {{/each}}
       TemplateURL: "https://{{environmentVariables.starBucket}}.s3.amazonaws.com/templates/core/lambda-functions.yaml"
-
-  LambdaFunctionPermissions:
-    Type: "AWS::CloudFormation::Stack"
-    DependsOn:
-      - GatewayBase
-      - LambdaFunctions
-    Properties:
-      Parameters:
-        API:
-          "Fn::GetAtt": ["GatewayBase", "Outputs.API"]
-        LambdaDone:
-          "Fn::GetAtt": ["LambdaFunctions", "Outputs.isDone"]
-      Tags:
-        - Key: Substack Type
-          Value: Core Lambda Function Permissions
-        {{#each tags}}
-        - Key: {{Key}}
-          Value: {{Value}}
-        {{/each}}
-      TemplateURL: "https://{{environmentVariables.starBucket}}.s3.amazonaws.com/templates/core/lambda-permissions.yaml"
