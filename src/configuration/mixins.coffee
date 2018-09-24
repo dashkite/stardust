@@ -45,23 +45,24 @@ fetchMixins = (config) ->
 reconcileConfigs = (mixins, config) ->
   # Access the policyStatement hook each mixin, and add to the array.
   # TODO: Consider policy uniqueness constraint.
-  SDK.config =
-    credentials: new SDK.SharedIniFileCredentials {profile: config.profile}
-    region: config.aws.region
-    sslEnabled: true
   {env} = config
+  for r, region in config.regions
+    SDK.config =
+      credentials: new SDK.SharedIniFileCredentials {profile: config.profile}
+      region: r
+      sslEnabled: true
 
-  s = config.policyStatements
-  for name, mixin of mixins when mixin.getPolicyStatements
-    _config = config.environments[env].mixins[name]
-    s = cat s, await mixin.getPolicyStatements _config, config, SDK
-  config.policyStatements = (YAML.safeDump i for i in s)
+    s = region.policyStatements
+    for name, mixin of mixins when mixin.getPolicyStatements
+      _config = config.environment.mixins[name]
+      s = cat s, await mixin.getPolicyStatements _config, config, SDK
+    region.policyStatements = (YAML.safeDump i for i in s)
 
-  v = config.environmentVariables
-  for name, mixin of mixins when mixin.getEnvironmentVariables
-    _config = config.environments[env].mixins[name]
-    v = merge v, await mixin.getEnvironmentVariables _config, config, SDK
-  config.environmentVariables = v
+    v = region.environmentVariables
+    for name, mixin of mixins when mixin.getEnvironmentVariables
+      _config = config.environment.mixins[name]
+      v = merge v, await mixin.getEnvironmentVariables _config, config, SDK
+    region.environmentVariables = v
 
   config
 

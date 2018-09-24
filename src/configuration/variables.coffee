@@ -11,25 +11,28 @@ import {join} from "path"
 import {merge} from "panda-parchment"
 
 applyStackVariables = (config) ->
-    config.aws ||= {}
-    config.aws.stack =
-      name: "stardust-#{config.name}-#{config.env}"
-      src: "stardust-#{config.name}-#{config.env}-#{config.projectID}"
-      pkg: join process.cwd(), "stardust", "deploy", "package.zip"
-      starDef: join process.cwd(), "stardust.yaml"
+    {regions} = config.environment
+    config.regions = {}
+    for region in regions
+      config.regions[region] =
+        stack:
+          name: "stardust-#{config.name}-#{config.env}-#{region}"
+          src: "stardust-#{config.name}-#{config.env}-#{config.projectID}-#{region}"
+          pkg: join process.cwd(), "stardust", "deploy", "package.zip"
+          starDef: join process.cwd(), "stardust.yaml"
     config
 
 applyEnvironmentVariables = (config) ->
-  {environment} = config
-  {variables} = environment
+  {environment:{variables, regions}} = config
   variables = {} if !variables
-  variables = merge variables,
-    baseName: config.name
-    environment: config.env
-    projectID: config.projectID
-    fullName: config.aws.stack.name
-    # Root bucket used to orchastrate Panda Sky state.
-    starBucket: config.aws.stack.src
+  for region in regions
+    config.regions[region].environmentVariables = merge variables,
+      baseName: config.name
+      environment: config.env
+      projectID: config.projectID
+      fullName: config.regions[region].stack.name
+      # Root bucket used to orchastrate Panda Sky state.
+      starBucket: config.regions[region].stack.src
 
   config.environmentVariables = variables
   config

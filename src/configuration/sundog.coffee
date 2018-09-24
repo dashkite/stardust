@@ -10,6 +10,9 @@ apply = (config) ->
      region: regions[0]
      sslEnabled: true
   config.sundog = Sundog(SDK).AWS
+
+  config.accountID = (await config.sundog.STS().whoAmI()).Account
+
   config
 
 export default apply

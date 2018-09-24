@@ -14,7 +14,9 @@ Metadata = class Metadata
     @pkg = @config.aws.stack.pkg
     @starDef = @config.aws.stack.starDef
     @templates = @config.aws.templates
-    @s3 = @config.sundog.S3()
+    @regions = @config.environment.regions
+    @S3 = @config.sundog.S3
+    @s3 = @config.sundog.S3 {region: @regions[0]}
 
   initialize: ->
     try
@@ -33,7 +35,10 @@ Metadata = class Metadata
       local = md5 await read(@pkg, "buffer")
       if local == @metadata.handlers then true else false
 
-    update: => await @s3.put @src, "package.zip", @pkg, false
+    update: =>
+      await Promise.all do =>
+        for region in @regions
+          @S3({region}).put @src, "package.zip", @pkg, false
 
   permissions: =>
     isCurrent: =>
@@ -69,16 +74,19 @@ Metadata = class Metadata
     {dirtyStack, dirtyLambda}
 
   create: ->
-    await @s3.bucketTouch @src
+    await Promise.all do =>
+      for region in @regions
+        @S3({region}).bucketTouch "#{@src}-#{region}"
     await @sync()
 
   delete: ->
-    if await @s3.bucketExists @src
-      console.log "-- Deleting deployment metadata."
-      await @s3.bucketEmpty @src
-      await @s3.bucketDel @src
-    else
-      console.warn "No Stardust metadata detected for this deployment. Moving on..."
+    console.log "-- Deleting deployment metadata."
+    await Promise.all do =>
+      for region in @regions
+        name = "#{@src}-#{region}"
+        if await @S3({region}).bucketExists name
+          await @S3({region}).bucketEmpty name
+          await @S3({region}).bucketDel name
 
   # This updates the contents of the bucket, but not the state MD5 hashes.
   sync: ->
@@ -92,7 +100,7 @@ Metadata = class Metadata
   # Holds the deployed state of resources as an MD5 hash of configuration files within a file named ".stardust"
   getState: ->
     try
-      yaml await @s3.get @src, ".stardust"
+      yaml await @S3({region:@regions[0]}).get @src, ".stardust"
     catch e
       false
 

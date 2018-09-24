@@ -4,8 +4,8 @@ Tags = (config) ->
   tally = []
   tags = []
   defaults =
-    project: config.name
-    skyID: config.projectID
+    project: "stardust-" + config.name
+    starID: config.projectID
     environment: config.env
 
   # Apply explicit tags, deleteing defaults if there is an override.

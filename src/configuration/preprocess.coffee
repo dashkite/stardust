@@ -16,12 +16,7 @@ preprocess = (config) ->
   {name, env} = config
 
   config = checkEnvironment config
-  config = applySundog config
-
-  config.accountID = (await config.sundog.STS().whoAmI()).Account
-  config.gatewayName = config.stackName = "#{name}-#{env}"
-  config.roleName = "#{capitalize name}#{capitalize env}LambdaRole"
-  config.policyName = "#{name}-#{env}"
+  config = await applySundog config
 
   config = applyVariables config
   config = applyTags config
@@ -30,7 +25,7 @@ preprocess = (config) ->
 
   config = await applyMixins config
 
-  config.aws.templates = await applyCloudFormationTemplates config
+  config = await applyCloudFormationTemplates config
   config
 
 export default preprocess
