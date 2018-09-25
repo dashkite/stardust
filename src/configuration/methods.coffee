@@ -2,11 +2,11 @@ import {toLower, capitalize, first, toUpper, dashed, plainText, camelCase} from 
 
 # Cycle through the methods on every resource and generate their algorithmic names.  This includes CloudFormation template names (CamelName) as well as lambda defintion names (dash-name).  These names are attached to the resource methods as implict properties and applied in the templates.
 Methods = (description) ->
-  {simulations, env} = description
+  {environment:{simulations}, env} = description
   appName = description.name
 
   lambdaFormat = (str) -> dashed plainText str
-  cloudfrontFormat = (str) -> camelCase plainText str
+  cloudfrontFormat = (str) -> capitalize camelCase plainText str
 
   for name, simulation of simulations
     input = simulation.input || source: "stardust"

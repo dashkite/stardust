@@ -30,6 +30,7 @@ applyEnvironmentVariables = (config) ->
     fullName: config.aws.stack.name
     # Root bucket used to orchastrate Panda Sky state.
     starBucket: config.aws.stack.src
+    target: config.environment.target
 
   config.environmentVariables = variables
   config

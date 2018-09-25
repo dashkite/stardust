@@ -5,7 +5,7 @@
     Description: "Stardust Simulation for {{@root.name}} {{@root.env}}"
     FunctionName: {{function.name}}
 
-    Handler: "lib/stardust.dispatch"
+    Handler: "stardust/lib/stardust.tests"
     Role:
       "Fn::GetAtt" : ["{{@root.roleName}}", "Arn"]
     Runtime: {{@root.aws.runtime}}
@@ -24,7 +24,7 @@
   {{#if timeout}}
     Timeout: {{timeout}}
   {{else}}
-    Timeout: 15
+    Timeout: 300
   {{/if}}
     Code:
       S3Bucket: {{template.bucket}}

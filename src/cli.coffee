@@ -36,6 +36,20 @@ do ->
       return if noEnv env
       Commands.publish stopwatch(), env, options
 
+  program
+    .command "delete [env]"
+    .option '-p, --profile [profile]', 'Name of AWS profile to use'
+    .action (env, options) ->
+      return if noEnv env
+      Commands.delete stopwatch(), env, options
+
+  program
+    .command "update [env]"
+    .option '-p, --profile [profile]', 'Name of AWS profile to use'
+    .action (env, options) ->
+      return if noEnv env
+      Commands.update stopwatch(), env, options
+
   program.help = -> console.log Commands.help
 
   # Begin execution.

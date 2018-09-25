@@ -21,7 +21,7 @@ mixinUnavailable = (m) ->
 # Check to make sure the listed mixins are valid.
 fetchMixinNames = (config) ->
   {env} = config
-  {mixins} = config.environments[env]
+  {mixins} = config.environment
   return false if !mixins
   keys mixins
 
@@ -53,13 +53,13 @@ reconcileConfigs = (mixins, config) ->
 
   s = config.policyStatements
   for name, mixin of mixins when mixin.getPolicyStatements
-    _config = config.environments[env].mixins[name]
+    _config = config.environment.mixins[name]
     s = cat s, await mixin.getPolicyStatements _config, config, SDK
   config.policyStatements = (YAML.safeDump i for i in s)
 
   v = config.environmentVariables
   for name, mixin of mixins when mixin.getEnvironmentVariables
-    _config = config.environments[env].mixins[name]
+    _config = config.environment.mixins[name]
     v = merge v, await mixin.getEnvironmentVariables _config, config, SDK
   config.environmentVariables = v
 

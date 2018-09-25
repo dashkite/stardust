@@ -10,20 +10,19 @@ fail = ->
 Handlers = class Handlers
   constructor: (@config) ->
     @stack = @config.aws.stack
-    @regions = @config.environment.regions
-    @Lambda = @config.sundog.Lambda
+    @lambda = @config.sundog.Lambda()
 
   initialize: ->
-    @names = (s for s of @config.simulations)
+    @names =
+      for _, s of @config.environment.simulations
+        s.lambda.function.name
     @bucket = await Bucket @config
 
   update: ->
     fail() if !@bucket.metadata
     await @bucket.syncHandlersSrc()
-    for region in @regions
-      lambda = @Lambda {region}
-      await Promise.all do =>
-        lambda.update name, @stack.src, "package.zip" for name in @names
+    await Promise.all do =>
+      @lambda.update name, @stack.src, "package.zip" for name in @names
 
 handlers = (config) ->
   h = new Handlers config

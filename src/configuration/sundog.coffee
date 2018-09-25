@@ -3,13 +3,14 @@ import Sundog from "sundog"
 
 apply = (config) ->
   {profile} = config
-  {regions} = config.environment
+  {region} = config.environment
 
   SDK.config =
      credentials: new SDK.SharedIniFileCredentials {profile}
-     region: regions[0]
+     region: region
      sslEnabled: true
   config.sundog = Sundog(SDK).AWS
+  config.accountID = (await config.sundog.STS().whoAmI()).Account
   config
 
 export default apply

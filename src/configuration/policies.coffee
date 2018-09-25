@@ -1,8 +1,10 @@
-import {cat} from "panda-parchment"
+import {cat, capitalize} from "panda-parchment"
 
 Statements = (config) ->
-  {environmentVariables: {starBucket}, simulations} = config
+  {environmentVariables: {starBucket}, environment:{simulations}, name, env} = config
   throw new Error "Undefined Stardust Home Bucket" if !starBucket
+  config.roleName = "#{capitalize name}#{capitalize env}LambdaRole"
+  config.policyName = "#{name}-#{env}"
 
   lambdaNames =
     for s, simulation of simulations

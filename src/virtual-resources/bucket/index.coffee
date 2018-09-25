@@ -64,8 +64,8 @@ Metadata = class Metadata
     # Examine core stack resources to update the CloudFormation stack.
     dirtyStack = !(await @starConfig().isCurrent()) || !@permissions().isCurrent()
 
-    # See if lambda handlers are up to date.
-    dirtyStack = !(await @handlers().isCurrent())
+    # See if lambda code is up to date.
+    dirtyLambda = !(await @handlers().isCurrent())
     {dirtyStack, dirtyLambda}
 
   create: ->
@@ -96,12 +96,11 @@ Metadata = class Metadata
     catch e
       false
 
-  syncState: (endpoint) ->
+  syncState: ->
     data =
       handlers: md5 (await read @pkg, "buffer")
       stardust: md5 await read @starDef
       permissions: md5 toJSON @config.policyStatements
-      endpoint: endpoint
 
     await @s3.put @src, ".stardust", (yaml data), "text/yaml"
 

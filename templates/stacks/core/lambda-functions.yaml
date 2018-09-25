@@ -14,9 +14,11 @@ Resources:
   {{> iamrole}}
 
   # Define all Lambdas for methods on all non-root resources
+  {{#with environment}}
   {{#each simulations}}
   {{> lambda }}
   {{/each}}
+  {{/with}}
 
 Outputs:
   isDone:

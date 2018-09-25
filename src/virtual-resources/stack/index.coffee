@@ -6,8 +6,7 @@ import questions from "./questions"
 Stack = class Stack
   constructor: (@config) ->
     @stack = @config.aws.stack
-    @regions = @config.environment.regions
-    @CFO = @config.sundog.CloudFormation
+    @cfo = @config.sundog.CloudFormation()
     #@ENI = @sundog.EC2.ENI
 
   initialize: ->
@@ -18,14 +17,13 @@ Stack = class Stack
     # if @config.aws.vpc?.skipConnectionDraining
     #   await @eni.purge (await @getSubnets()),
     #     (eni) -> ///#{@stack.name}///.test eni.RequesterId
-    await Promise.all do =>
-      @CFO({region}).delete @stack.name for region in @regions
+    await @cfo.delete @stack.name
     await @bucket.delete()
 
   #getSubnets: -> (await @cfo.output "Subnets", name).split ","
 
   # Ask politely if a stack override is neccessary.
-  override: (region) ->
+  override: ->
     try
       {ask} = new Interview()
       answers = await ask questions @stack.name
@@ -36,7 +34,7 @@ Stack = class Stack
 
     if answers.override
       console.log "Attempting to remove non-Stardust stack..."
-      await @CFO({region}).delete @stack.name
+      await @cfo.delete @stack.name
       console.log "Removal complete.  Continuing with publish."
     else
       console.warn "Discontinuing publish."
@@ -47,9 +45,7 @@ Stack = class Stack
     console.log "Waiting for new stack publish to complete..."
 
     await @bucket.create()
-    await Promise.all do =>
-      for region in @regions
-        @CFO({region}).create @bucket.cloudformationParameters
+    await @cfo.create @bucket.cloudformationParameters
     await @bucket.syncState()
 
   updatePublish: ->
@@ -61,9 +57,7 @@ Stack = class Stack
     @bucket.sync()
     if dirtyStack
       console.log "Waiting for stack update to complete..."
-      await Promise.all do =>
-        for region in @regions
-          @CFO({region}).update @bucket.cloudformationParameters
+      await @cfo.update @bucket.cloudformationParameters
     if dirtyLambda
       console.log "Updating deployment lambdas..."
       await @handlers.update()
@@ -73,10 +67,9 @@ Stack = class Stack
     if @bucket.metadata
       await @updatePublish()
     else
-      for region in @regions when (await @CFO({region}).get @stack.name)
-        await @override region
+      await @override() if await @cfo.get @stack.name
       await @newPublish()
-    console.log "Your simulation array is online and running."
+    console.log "Your simulation array is online and ready."
 
 stack = (config) ->
   S = new Stack config
