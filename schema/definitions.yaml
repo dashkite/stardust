@@ -1,0 +1,71 @@
+environment:
+  description: >
+    A collection of Cloud resources allocated on your behalf to deploy the Stardust stack.
+  type: object
+  additionalProperties: false
+  properties:
+    variables:
+      description: >
+        A dictionary of variable names to be injected into the environment configuration for this stacks lambdas.  Total size cannot exceed 4kB, and there is already a portion of that taken up by Sky by default.  This dicitonary is not yet ready to accept sensitive information.
+      type: object
+
+    region:
+        description: >
+          The home AWS Region of your Cloud resources, when they are
+          region-specific. ACM certificates are currently always be accessed
+          from AWS Region us-east-1 (N. Virginia), regardless of the value set
+          here.
+        type: string
+        enum:
+          - us-east-1
+          - us-west-1
+          - us-west-2
+          - eu-west-1
+          - eu-central-1
+          - ap-southeast-1
+          - ap-northeast-1
+          - ap-southeast-2
+          - ap-northeast-2
+          - sa-east-1
+
+    target:
+      description: >
+        The target URL for the simulations to load with network traffic.
+      type: string
+
+    mixins:
+      description: >
+        This is a dictionary of Sky mixins.  The keys are the names, and the
+        values are the mixin-specific configuration.  The schemas for those
+        configurations are held within the mixins themselves.
+      type: object
+
+    simulations:
+      description: >
+        A dictionary of simulations and their configuration for this environment.
+      type: object
+      minProperties: 1
+      additionalProperties: {$ref: "#/definitions/simulation"}
+
+simulation:
+  description: >
+    Configuration for a single simulation in the environment.
+  type: object
+  additionalProperties: false
+  required: [count, scale, repeat]
+  properties:
+    count:
+      description: >
+        The number of parallel Lambda instances you would like to run when invoking this Stardust environment.
+      type: integer
+      minimum: 1
+    scale:
+      description: >
+        The number of parallel simulation invocations to run within a single Lambda instance.  They are launched staggered, evenly spaced within 1 second.
+      type: integer
+      minimum: 1
+    repeat:
+      description: >
+        The number of times to repeat the whole cycle within single lambda invocation.  The scale number of invocations is launched each cycle as soon as the previous cycle is fully resolved.
+      type: integer
+      minimum: 1

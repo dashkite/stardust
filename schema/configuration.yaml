@@ -6,6 +6,7 @@ required:
   - source
   - name
   - projectID
+  - aws
 properties:
   source:
     type: string
@@ -27,6 +28,43 @@ properties:
       deployment, this ID is part of the name.  This is generated for you
       when you use 'sky init', or you may provide your own.
     type: string
+
+  aws:
+    description: >
+      This is a high level description of the requested Cloud resources from AWS
+      that Sky uses when constructing your severless deployments.  The top level
+      features global configuration, a dictionary of environments allows you
+      to hold the configuration for multiple, related deployments
+      simulatenously.
+    type: object
+    additionalProperties: false
+    required: [ runtime, environments ]
+    properties:
+      runtime:
+        description: >
+          The Lambda runtime environment used to run your code that backs the
+          API Gateway.
+        type: string
+        enum:
+          - nodejs8.10
+          - nodejs6.10
+          - nodejs4.3
+
+      environments:
+        description:
+          An environment is a collection of Cloud resources that are allocated
+          on your behalf as a distinct serverless Sky deployment.
+          For example, perhaps you wish to test changes at a secondary hostname
+          without disrupting production deployments. Organizing configuration
+          for those two cases into separate environments allows you to publish
+          from the commandline by just invoking the name, not adjusting
+          configuration each time.
+
+          environments is a dictionary. The keys are the name of the given
+          environment, and its value is the definition.
+        type: object
+        minProperties: 1
+        additionalProperties: {$ref: "#/definitions/environment"}
 
   tags:
     description: >

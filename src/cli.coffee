@@ -50,6 +50,14 @@ do ->
       return if noEnv env
       Commands.update stopwatch(), env, options
 
+  program
+    .command "run [env]"
+    .option '-p, --profile [profile]', 'Name of AWS profile to use'
+    .action (env, options) ->
+      return if noEnv env
+      Commands.run stopwatch(), env, options
+
+
   program.help = -> console.log Commands.help
 
   # Begin execution.

@@ -12,6 +12,7 @@ schemaPath = (name) ->
 
 getSchema = ->
   schema = load await read schemaPath "configuration.yaml"
+  schema.definitions = load await read schemaPath "definitions.yaml"
   schema
 
 readConfiguration = ->

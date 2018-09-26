@@ -1,4 +1,4 @@
-import {read, toLower, cat, sleep, empty, last, md5} from "fairmont"
+import {values, cat} from "panda-parchment"
 import {yaml} from "panda-serialize"
 import Bucket from "../bucket"
 
@@ -23,6 +23,12 @@ Handlers = class Handlers
     await @bucket.syncHandlersSrc()
     await Promise.all do =>
       @lambda.update name, @stack.src, "package.zip" for name in @names
+
+  run: ->
+    for simulation in values @config.environment.simulations
+      {count, scale, repeat, lambda:{function:{name}}} = simulation
+      for [0..count]
+        await @lambda.asyncInvoke name, {scale, repeat}
 
 handlers = (config) ->
   h = new Handlers config
