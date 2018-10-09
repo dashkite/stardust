@@ -53,6 +53,8 @@ do ->
   program
     .command "run [env]"
     .option '-p, --profile [profile]', 'Name of AWS profile to use'
+    .option "-r, --repeat [repeat]", "Number of times to run this salvo"
+    .option "-i, --interval [interval]", "Number of seconds between salvos"
     .action (env, options) ->
       return if noEnv env
       Commands.run stopwatch(), env, options
