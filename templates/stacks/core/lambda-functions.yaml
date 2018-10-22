@@ -18,6 +18,9 @@ Resources:
   {{#each simulations}}
   {{> lambda }}
   {{/each}}
+  {{#each functionals}}
+  {{> lambda }}
+  {{/each}}
   {{/with}}
 
 Outputs:

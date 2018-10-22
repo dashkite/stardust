@@ -47,6 +47,14 @@ environment:
       minProperties: 1
       additionalProperties: {$ref: "#/definitions/simulation"}
 
+    functionalTests:
+      description: >
+        An array of Lambdas that are similar to the simulations, but are meant to be run in isolation, synchronously, and return data that can be tested for interity.
+      type: array
+      minItems: 1
+      items:
+        type: string
+
 simulation:
   description: >
     Configuration for a single simulation in the environment.

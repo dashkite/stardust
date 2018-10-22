@@ -13,9 +13,9 @@ getVersion = ->
     throw e
 
 stopwatch = ->
-  start = new Date().getTime()
+  start = Date.now()
   ->
-    d = moment.duration(new Date().getTime() - start)
+    d = moment.duration Date.now() - start
     if 0 < d.asSeconds() <= 60
       d.format("s[ s]", 1)
     else if 60 < d.asSeconds() < 3600

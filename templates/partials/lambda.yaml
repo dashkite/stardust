@@ -9,6 +9,7 @@
     Role:
       "Fn::GetAtt" : ["{{@root.roleName}}", "Arn"]
     Runtime: {{@root.aws.runtime}}
+    MemorySize: 256
     {{#if @root.aws.vpc}}
     VpcConfig:
       SecurityGroupIds:

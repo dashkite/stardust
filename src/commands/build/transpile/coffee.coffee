@@ -5,7 +5,6 @@ import "@babel/preset-env"
 import {go, map, tee, reject, wait} from "panda-river"
 import {Type, isType} from "panda-parchment"
 import {glob, read} from "panda-quill"
-import {Method} from "panda-generics"
 
 import {context, write} from "../utils"
 
@@ -39,7 +38,7 @@ transpile = (sourceDir, targetDir) ->
       map context sourceDir
       tee ({target}) -> target.extension = ".js"
       tee render
-      wait
+      wait map (x) -> x
       tee write targetDir
     ]
   catch e

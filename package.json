@@ -26,8 +26,8 @@
   },
   "homepage": "https://github.com/dashkite/stardust#readme",
   "devDependencies": {
-    "gulp": "github:gulpjs/gulp#4.0",
-    "panda-builder": "^2.3.3"
+    "gulp": "github:gulpjs/gulp#v4.0.0",
+    "panda-builder": "^2.4.1"
   },
   "dependencies": {
     "@babel/preset-env": "^7.1.0",
@@ -45,8 +45,8 @@
     "panda-interview": "0.0.1",
     "panda-parchment": "^4.0.4",
     "panda-quill": "^3.1.1",
-    "panda-river": "^4.0.9",
+    "panda-river": "^4.3.0",
     "panda-template": "^0.4.2",
-    "sundog": "file:../../sundog"
+    "sundog": "^1.0.0"
   }
 }
