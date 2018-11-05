@@ -4,11 +4,6 @@ Resources:
   StardustCore:
     Type: "AWS::CloudFormation::Stack"
     Properties:
-      {{#with aws.vpc}}
-      Parameters:
-        SecurityGroups: {{securityGroups}}
-        Subnets: {{subnets}}
-      {{/with}}
       Tags:
         - Key: Substack Type
           Value: Core
@@ -17,3 +12,17 @@ Resources:
           Value: {{Value}}
         {{/each}}
       TemplateURL: "https://{{environmentVariables.starBucket}}.s3.amazonaws.com/templates/core/index.yaml"
+
+  {{#if needsMixinResources}}
+  StarMixins:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      Tags:
+        - Key: Substack Type
+          Value: Mixins Top Level
+        {{#each tags}}
+        - Key: {{Key}}
+          Value: {{Value}}
+        {{/each}}
+      TemplateURL: "https://{{environmentVariables.starBucket}}.s3.amazonaws.com/templates/mixins/index.yaml"
+  {{/if}}

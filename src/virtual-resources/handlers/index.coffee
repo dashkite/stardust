@@ -28,7 +28,7 @@ Handlers = class Handlers
     {target} = @config.environment
     for simulation in values @config.environment.simulations
       {count, scale, repeat, lambda:{function:{name}}} = simulation
-      for [0..count]
+      for [1..count]
         await @lambda.asyncInvoke name, {scale, repeat, target}
 
 handlers = (config) ->
