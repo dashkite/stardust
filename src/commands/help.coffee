@@ -15,6 +15,7 @@ help = """
     delete
     publish
     render
+    test
   """
 
 export default help

@@ -60,11 +60,13 @@ do ->
       Commands.run stopwatch(), env, options
 
   program
-    .command "test [env]"
+    .command "test [env] [dir] [others...]"
     .option '-p, --profile [profile]', 'Name of AWS profile to use'
-    .action (env, options) ->
+    .action (env, dir, others, options) ->
       return if noEnv env
-      Commands.test stopwatch(), env, options
+      if !dir
+        console.error "must provide a target directory for functional tests."
+      Commands.test stopwatch(), env, dir, others, options
 
 
   program.help = -> console.log Commands.help
