@@ -1,6 +1,6 @@
 {
   "name": "dashkite-stardust",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Serverless Framework for Load Testing Simulations",
   "main": "./build/npm/src/cli.js",
   "files": [
@@ -30,6 +30,7 @@
     "panda-builder": "^2.4.1"
   },
   "dependencies": {
+    "@babel/core": "^7.2.0",
     "@babel/preset-env": "^7.1.0",
     "aws-sdk": "^2.320.0",
     "babel-core": "^6.26.3",
