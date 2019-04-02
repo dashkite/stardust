@@ -4,12 +4,9 @@ Resources:
   # IAM (Identity and Access Management), granting functions acccess to other stack resources.
   {{> iamrole}}
 
-  # Define all Lambdas for methods on all non-root resources
+  # Define all lambdas in the Stardust array
   {{#with environment}}
-  {{#each simulations}}
-  {{> lambda }}
-  {{/each}}
-  {{#each functionals}}
+  {{#each lambdas}}
   {{> lambda }}
   {{/each}}
   {{/with}}

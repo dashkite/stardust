@@ -69,7 +69,7 @@ Stack = class Stack
     else
       await @override() if await @cfo.get @stack.name
       await @newPublish()
-    console.log "Your simulation array is online and ready."
+    console.log "Your lambdas are ready."
 
 stack = (config) ->
   S = new Stack config

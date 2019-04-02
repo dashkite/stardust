@@ -1,15 +1,14 @@
-{{#with lambda}}
 {{template.name}}:
   Type: "AWS::Lambda::Function"
   Properties:
-    Description: "Stardust Simulation for {{@root.name}} {{@root.env}}"
+    Description: "Stardust Lambda for {{@root.name}} {{@root.env}}"
     FunctionName: {{function.name}}
 
-    Handler: "stardust/lib/stardust.tests"
+    Handler: "stardust/lib/stardust.handler"
     Role:
       "Fn::GetAtt" : ["{{@root.roleName}}", "Arn"]
     Runtime: {{@root.aws.runtime}}
-    MemorySize: 256
+    MemorySize: 512
     {{#if @root.aws.vpc}}
     VpcConfig:
       SecurityGroupIds:
@@ -25,9 +24,8 @@
   {{#if timeout}}
     Timeout: {{timeout}}
   {{else}}
-    Timeout: 300
+    Timeout: 900
   {{/if}}
     Code:
       S3Bucket: {{template.bucket}}
       S3Key: "package.zip"
-{{/with}}

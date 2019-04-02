@@ -11,11 +11,10 @@ help = """
 
   Commands:
 
-    build     Compile and package the loadtest code for deploy
-    delete
-    publish
-    render
-    test
+    build           Compile and package code for deploy
+    delete [env]    Environment teardown
+    publish [env]   Publish lambdas for given environment
+    render [env]    Dry run for publish, outputs CloudFormation template
   """
 
 export default help

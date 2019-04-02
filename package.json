@@ -1,6 +1,6 @@
 {
   "name": "dashkite-stardust",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "Serverless Framework for Load Testing Simulations",
   "main": "./build/npm/src/cli.js",
   "files": [
@@ -26,8 +26,8 @@
   },
   "homepage": "https://github.com/dashkite/stardust#readme",
   "devDependencies": {
-    "gulp": "github:gulpjs/gulp#v4.0.0",
-    "panda-builder": "^2.4.1"
+    "panda-9000": "^4.4.0",
+    "panda-builder": "^3.2.1"
   },
   "dependencies": {
     "@babel/core": "^7.2.0",

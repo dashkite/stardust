@@ -40,40 +40,10 @@ environment:
         configurations are held within the mixins themselves.
       type: object
 
-    simulations:
+    lambdas:
       description: >
-        A dictionary of simulations and their configuration for this environment.
-      type: object
-      minProperties: 1
-      additionalProperties: {$ref: "#/definitions/simulation"}
-
-    functionalTests:
-      description: >
-        An array of Lambdas that are similar to the simulations, but are meant to be run in isolation, synchronously, and return data that can be tested for interity.
+        An array of lambdas deployed and ready for invocation.
       type: array
       minItems: 1
       items:
         type: string
-
-simulation:
-  description: >
-    Configuration for a single simulation in the environment.
-  type: object
-  additionalProperties: false
-  required: [count, scale, repeat]
-  properties:
-    count:
-      description: >
-        The number of parallel Lambda instances you would like to run when invoking this Stardust environment.
-      type: integer
-      minimum: 1
-    scale:
-      description: >
-        The number of parallel simulation invocations to run within a single Lambda instance.  They are launched staggered, evenly spaced within 1 second.
-      type: integer
-      minimum: 1
-    repeat:
-      description: >
-        The number of times to repeat the whole cycle within single lambda invocation.  The scale number of invocations is launched each cycle as soon as the previous cycle is fully resolved.
-      type: integer
-      minimum: 1
