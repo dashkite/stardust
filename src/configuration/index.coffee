@@ -1,7 +1,7 @@
 import {resolve} from "path"
 import SDK from "aws-sdk"
 import JSCK from "jsck"
-import {safeLoad as load} from "js-yaml"
+import {yaml} from "panda-serialize"
 import {read, exists} from "panda-quill"
 import {merge} from "panda-parchment"
 
@@ -11,8 +11,8 @@ schemaPath = (name) ->
   resolve __dirname, "..", "..", "..", "..", "schema", name
 
 getSchema = ->
-  schema = load await read schemaPath "configuration.yaml"
-  schema.definitions = load await read schemaPath "definitions.yaml"
+  schema = yaml await read schemaPath "configuration.yaml"
+  schema.definitions = yaml await read schemaPath "definitions.yaml"
   schema
 
 readConfiguration = ->
@@ -22,7 +22,7 @@ readConfiguration = ->
     process.exit -1
 
   try
-    load await read file
+    yaml await read file
   catch e
     console.error "Unable to parse stardust.yaml configuration file."
     console.error e

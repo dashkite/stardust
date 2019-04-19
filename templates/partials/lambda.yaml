@@ -7,25 +7,21 @@
     Handler: "stardust/lib/stardust.handler"
     Role:
       "Fn::GetAtt" : ["{{@root.roleName}}", "Arn"]
-    Runtime: {{@root.aws.runtime}}
-    MemorySize: 512
+    Runtime: {{@root.environment.runtime}}
+    MemorySize: {{@root.environment.memorySize}}
+    Timeout: {{@root.environment.timeout}}
+    Environment:
+      Variables:
+      {{#each @root.environmentVariables}}
+        {{@key}}: {{this}}
+      {{/each}}
+    Code:
+      S3Bucket: {{template.bucket}}
+      S3Key: "package.zip"
     {{#if @root.aws.vpc}}
     VpcConfig:
       SecurityGroupIds:
         "Fn::Split" : [ ",", {"Ref": SecurityGroups} ]
       SubnetIds:
         "Fn::Split" : [ ",", {"Ref": Subnets} ]
-    {{/if}}
-    Environment:
-      Variables:
-      {{#eachProperty @root.environmentVariables}}
-        {{key}}: {{value}}
-      {{/eachProperty}}
-  {{#if timeout}}
-    Timeout: {{timeout}}
-  {{else}}
-    Timeout: 900
-  {{/if}}
-    Code:
-      S3Bucket: {{template.bucket}}
-      S3Key: "package.zip"
+    {{/if}}  

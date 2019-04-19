@@ -1,6 +1,6 @@
 {
   "name": "dashkite-stardust",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Serverless Framework for Load Testing Simulations",
   "main": "./build/npm/src/cli.js",
   "files": [
@@ -38,7 +38,6 @@
     "commander": "^2.18.0",
     "fairmont": "^2.0.1",
     "fairmont-process": "^2.0.0",
-    "js-yaml": "^3.12.0",
     "jsck": "^0.3.2",
     "moment": "^2.22.2",
     "moment-duration-format": "^2.2.2",
@@ -47,7 +46,8 @@
     "panda-parchment": "^4.0.4",
     "panda-quill": "^3.1.1",
     "panda-river": "^4.3.0",
-    "panda-template": "^0.4.2",
-    "sundog": "1.0.10"
+    "panda-serialize": "^0.6.0",
+    "panda-template": "^1.0.0",
+    "sundog": "^3.0.0"
   }
 }

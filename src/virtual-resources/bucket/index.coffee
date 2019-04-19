@@ -33,32 +33,36 @@ Metadata = class Metadata
       local = md5 await read(@pkg, "buffer")
       if local == @metadata.handlers then true else false
 
-    update: => await @s3.put @src, "package.zip", @pkg, false
+    update: => await @s3.PUT.file @src, "package.zip", @pkg
 
   permissions: =>
     isCurrent: =>
       local = md5 toJSON @config.policyStatements
       if local == @metadata.permissions then true else false
 
-    update: => await @s3.put @src, "permissions.json", toJSON(@config.policyStatements), "text/json"
+    update: => await @s3.PUT.string @src, "permissions.json",
+      (toJSON @config.policyStatements), ContentType: "application/json"
 
   starConfig: =>
     isCurrent: =>
       local = md5 await read @starDef
       if local == @metadata.stardust then true else false
 
-    update: => await @s3.put @src, "stardust.yaml", @starDef, false
+    update: => await @s3.PUT.file @src, "stardust.yaml", @starDef
 
   stacks: =>
     update: =>
       # Upload the root stack...
-      await @s3.put @src, "template.yaml", (yaml @templates.root), "text/yaml"
+      await @s3.PUT.string @src, "template.yaml",
+        (yaml @templates.root), ContentType: "text/yaml"
 
       # Now all the nested children...
       for key, stack of @templates.core
-        await @s3.put @src, "templates/#{key}", stack, "text/yaml"
+        await @s3.PUT.string @src, "templates/#{key}",
+          stack, ContentType: "text/yaml"
       for key, stack of @templates.mixins
-        await @s3.put @src, "templates/mixins/#{key}.yaml", stack, "text/yaml"
+        await @s3.PUT.string @src, "templates/mixins/#{key}.yaml",
+          stack, ContentType: "text/yaml"
 
   needsUpdate: ->
     # Examine core stack resources to update the CloudFormation stack.
@@ -76,7 +80,7 @@ Metadata = class Metadata
     if await @s3.bucketExists @src
       console.log "-- Deleting deployment metadata."
       await @s3.bucketEmpty @src
-      await @s3.bucketDel @src
+      await @s3.bucketDelete @src
     else
       console.warn "No Stardust metadata detected for this deployment. Moving on..."
 
@@ -102,7 +106,8 @@ Metadata = class Metadata
       stardust: md5 await read @starDef
       permissions: md5 toJSON @config.policyStatements
 
-    await @s3.put @src, ".stardust", (yaml data), "text/yaml"
+    await @s3.PUT.string @src, ".stardust",
+      (yaml data), ContentType: "text/yaml"
 
 metadata = (config) ->
   M = new Metadata config

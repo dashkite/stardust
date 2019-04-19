@@ -19,7 +19,7 @@ command = (stopwatch, env, options) ->
 
     console.log "Syncing Lambdas..."
     # Update the lambdas.
-    await handlers.update()
+    await handlers.update options
     console.log "Done. (#{stopwatch()})"
   catch e
     console.error "Publish failure."

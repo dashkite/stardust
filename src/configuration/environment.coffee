@@ -9,6 +9,12 @@ environment = (config) ->
 
   config.environment = environments[env]
   config.aws.region = config.environment.region
+
+  # Lambda defaults
+  config.environment.runtime = config.aws.runtime
+  config.environment.memorySize = 256 unless config.environment.memorySize
+  config.environment.timeout = 60 unless config.environment.timeout
+
   config
 
 export default environment
