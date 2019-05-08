@@ -9,7 +9,7 @@ command = (stopwatch, env, options) ->
     stack = await Stack config
 
     console.log "Publishing..."
-    await stack.publish()
+    await stack.publish options
     console.log "Done. (#{stopwatch()})"
   catch e
     console.error "Publish failure."

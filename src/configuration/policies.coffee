@@ -1,4 +1,5 @@
 import {cat, capitalize} from "panda-parchment"
+import {yaml} from "panda-serialize"
 
 Statements = (config) ->
   {environmentVariables: {starBucket}, environment, name, env} = config
@@ -30,6 +31,17 @@ Statements = (config) ->
         "arn:aws:s3:::#{starBucket}/api.yaml"
       ]
     }
+  ]
+
+  # Stringify the step function permissions, but not the lambdas's because they
+  # are possibly augmented by mixins.
+  config.flowPolicyStatements = [
+    yaml
+      Effect: "Allow"
+      Action: [
+        "lambda:InvokeFunction"
+      ]
+      Resource: (lambda.function.arn for _, lambda of environment.lambdas)
   ]
 
   config

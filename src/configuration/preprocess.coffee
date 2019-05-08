@@ -3,7 +3,7 @@ import applySundog from "./sundog"
 
 import applyVariables from "./variables"
 import applyTags from "./tags"
-import applySimulationMethods from "./methods"
+import applyFlows from "./flows"
 import applyPolicyStatements from "./policies"
 
 import applyMixins from "./mixins"
@@ -18,11 +18,10 @@ preprocess = (config) ->
 
   config = applyVariables config
   config = applyTags config
-  config = applySimulationMethods config
+  config = await applyFlows config
   config = applyPolicyStatements config
 
   config = await applyMixins config
-
   config.aws.templates = await applyCloudFormationTemplates config
   config
 

@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: Panda Sky Core Resources - Lambda Functions
 Resources:
   # IAM (Identity and Access Management), granting functions acccess to other stack resources.
-  {{> iamrole}}
+  {{> lambda-iamrole}}
 
   # Define all lambdas in the Stardust array
   {{#with environment}}

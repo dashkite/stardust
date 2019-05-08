@@ -48,11 +48,14 @@ Stack = class Stack
     await @cfo.create @bucket.cloudformationParameters
     await @bucket.syncState()
 
-  updatePublish: ->
-    {dirtyStack, dirtyLambda} = await @bucket.needsUpdate()
-    if !dirtyStack && !dirtyLambda
-      console.warn "Stardust deployment already up to date."
-      return
+  updatePublish: (options) ->
+    if options.force
+      dirtyStack = dirtyLambda = true
+    else
+      {dirtyStack, dirtyLambda} = await @bucket.needsUpdate()
+      if !dirtyStack && !dirtyLambda
+        console.warn "Stardust deployment already up to date."
+        return
 
     @bucket.sync()
     if dirtyStack
@@ -63,13 +66,13 @@ Stack = class Stack
       await @handlers.update()
     await @bucket.syncState()
 
-  publish: ->
+  publish: (options) ->
     if @bucket.metadata
-      await @updatePublish()
+      await @updatePublish options
     else
       await @override() if await @cfo.get @stack.name
       await @newPublish()
-    console.log "Your lambdas are ready."
+    console.log "Your deployment is ready."
 
 stack = (config) ->
   S = new Stack config

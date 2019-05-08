@@ -1,6 +1,6 @@
 {
   "name": "dashkite-stardust",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Serverless Framework for Load Testing Simulations",
   "main": "./build/npm/src/cli.js",
   "files": [

@@ -1,7 +1,7 @@
 import JSCK from "jsck"
 import {read} from "panda-quill"
 import {merge, collect, project} from "panda-parchment"
-import {yaml} from "panda-serialize"
+import {yaml, json} from "panda-serialize"
 import pandaTemplate from "panda-template"
 
 join = (d, array) -> array.join d
@@ -21,6 +21,9 @@ Templater = class Templater
         for c in trueContext
           ret = ret + options.fn c
         ret
+
+      yaml: (input) -> yaml input
+      json: (input) -> json input
 
   @read: (templatePath, schemaPath) ->
     template = await read templatePath

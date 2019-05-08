@@ -1,0 +1,8 @@
+Flow{{template.name}}:
+  Type: AWS::StepFunctions::StateMachine
+  Properties:
+    DefinitionString: >
+      {{indent 6 flow.description}}
+    RoleArn:
+      "Fn::GetAtt" : ["Flow{{@root.roleName}}", "Arn"]
+    StateMachineName: {{flow.name}}

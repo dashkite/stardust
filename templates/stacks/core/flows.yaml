@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Panda Sky Core Resources - Step Function Flows
+Resources:
+  # IAM (Identity and Access Management), granting the step function service access to the lambdas it possibly needs to invoke.
+  {{> flow-iamrole}}
+
+  # Define all flows in the Stardust environment
+  {{#with environment}}
+  {{#each flows}}
+  {{> flow }}
+  {{/each}}
+  {{/with}}

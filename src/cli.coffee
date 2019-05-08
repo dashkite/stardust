@@ -32,6 +32,7 @@ do ->
   program
     .command "publish [env]"
     .option '-p, --profile [profile]', 'Name of AWS profile to use'
+    .option '-f, --force', 'override the state checks issue update'
     .action (env, options) ->
       return if noEnv env
       Commands.publish stopwatch(), env, options

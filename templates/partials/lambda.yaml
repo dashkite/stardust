@@ -4,7 +4,7 @@
     Description: "Stardust Lambda for {{@root.name}} {{@root.env}}"
     FunctionName: {{function.name}}
 
-    Handler: "stardust/lib/stardust.handler"
+    Handler: "stardust/lib/flows/{{template.path}}.handler"
     Role:
       "Fn::GetAtt" : ["{{@root.roleName}}", "Arn"]
     Runtime: {{@root.environment.runtime}}
@@ -24,4 +24,4 @@
         "Fn::Split" : [ ",", {"Ref": SecurityGroups} ]
       SubnetIds:
         "Fn::Split" : [ ",", {"Ref": Subnets} ]
-    {{/if}}  
+    {{/if}}

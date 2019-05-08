@@ -12,3 +12,15 @@ Resources:
           Value: {{Value}}
         {{/each}}
       TemplateURL: "https://{{environmentVariables.starBucket}}.s3.amazonaws.com/templates/core/lambda-functions.yaml"
+
+  Flows:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      Tags:
+        - Key: Substack Type
+          Value: Step Function Flows
+        {{#each tags}}
+        - Key: {{Key}}
+          Value: {{Value}}
+        {{/each}}
+      TemplateURL: "https://{{environmentVariables.starBucket}}.s3.amazonaws.com/templates/core/flows.yaml"

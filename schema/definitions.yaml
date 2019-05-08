@@ -55,9 +55,9 @@ environment:
         configurations are held within the mixins themselves.
       type: object
 
-    lambdas:
+    flows:
       description: >
-        An array of lambdas deployed and ready for invocation.
+        An array of step function flows deployed and ready for invocation.
       type: array
       minItems: 1
       items:

@@ -1,0 +1,26 @@
+Flow{{roleName}}:
+  Type: "AWS::IAM::Role"
+  Properties:
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: "Allow"
+          Principal:
+            Service:
+              - states.amazonaws.com
+          Action:
+            - "sts:AssumeRole"
+    {{#if managedPolicies}}
+    ManagedPolicyArns:
+      {{#each managedPolicies}}
+      - {{.}}
+      {{/each}}
+    {{/if}}
+    Policies:
+      - PolicyName: flow-{{policyName}}
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          {{#each flowPolicyStatements}}
+            - {{indent 14 .}}
+          {{/each}}

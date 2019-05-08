@@ -17,13 +17,13 @@ Handlers = class Handlers
     @names = (lambda.function.name for _, lambda of @config.environment.lambdas)
     @bucket = await Bucket @config
 
-  update: ({hard}) ->
+  update: (options) ->
     fail() if !@bucket.metadata
     await @bucket.syncHandlersSrc()
     await Promise.all do =>
       @lambda.update name, @stack.src, "package.zip" for name in @names
 
-    if hard
+    if options?.hard
       await sleep 5000
       LambdaConfig =
         MemorySize: @config.environment.memorySize
