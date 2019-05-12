@@ -10,9 +10,9 @@ Flows = (description) ->
   cloudfrontFormat = (str) -> capitalize camelCase plainText str
 
   defineLambda = (flowName, name) ->
-    lambdaName = "SD-#{appName}-#{env}-#{name}"
+    lambdaName = "SD-#{appName}-#{env}-#{flowName}-#{name}"
     template:
-      name: "#{cloudfrontFormat name}Lambda"
+      name: "#{cloudfrontFormat "#{flowName}-#{name}"}Lambda"
       bucket: description.environmentVariables.starBucket
       path: "#{flowName}/lambdas/#{name}"
     "function":
@@ -33,11 +33,15 @@ Flows = (description) ->
         flow.States[name].Resource = lambda.function.arn
 
     description.environment.flows[flowName] =
-      template:
-        name: cloudfrontFormat flowName
-      flow:
-        name: "stardust-#{appName}-#{env}-#{flowName}"
-        description: json flow
+      do (name = undefined) ->
+        name = "stardust-#{appName}-#{env}-#{flowName}"
+
+        template:
+          name: cloudfrontFormat flowName
+        flow:
+          name: name
+          description: json flow
+          arn: "arn:aws:states:#{description.aws.region}:#{description.accountID}:stateMachine:#{name}"
 
 
   description.environment.flows = {}

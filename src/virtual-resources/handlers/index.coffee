@@ -1,4 +1,4 @@
-import {values, cat} from "panda-parchment"
+import {values, cat, sleep} from "panda-parchment"
 import {yaml} from "panda-serialize"
 import Bucket from "../bucket"
 
@@ -32,7 +32,7 @@ Handlers = class Handlers
         Environment:
           Variables: @config.environmentVariables
       await Promise.all do =>
-        @Lambda.updateConfig name, LambdaConfig for name in @names
+        @lambda.updateConfig name, LambdaConfig for name in @names
 
 handlers = (config) ->
   h = new Handlers config

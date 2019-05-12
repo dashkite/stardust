@@ -13,6 +13,7 @@ Statements = (config) ->
   buildARN = (n) -> "arn:aws:logs:*:*:log-group:/aws/lambda/#{n}:*"
   loggerResources = (buildARN n for n in lambdaNames)
 
+  # Give the lambdas permission to access their CloudWatch logs, the source bucket for lambda code, and each flow within the environment.
   config.policyStatements = [
     {
       Effect: "Allow"
@@ -30,11 +31,21 @@ Statements = (config) ->
       Resource: [
         "arn:aws:s3:::#{starBucket}/api.yaml"
       ]
+    },{
+      Effect: "Allow"
+      Action: [
+        "states:StartExecution"
+      ]
+      Resource: (flow.arn for name, {flow} of environment.flows)
+    },{
+      Effect: "Allow"
+      Action: [
+        "states:ListStateMachines"
+      ]
     }
   ]
 
-  # Stringify the step function permissions, but not the lambdas's because they
-  # are possibly augmented by mixins.
+  # Since this won't be augmented by the mixins, stringify the step function permissions granting access to every lambda in the environment.
   config.flowPolicyStatements = [
     yaml
       Effect: "Allow"
