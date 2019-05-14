@@ -9,12 +9,12 @@ Flows = (description) ->
 
   cloudfrontFormat = (str) -> capitalize camelCase plainText str
 
-  defineLambda = (flowName, name) ->
-    lambdaName = "SD-#{appName}-#{env}-#{flowName}-#{name}"
+  defineLambda = (name, path) ->
+    lambdaName = "SD-#{appName}-#{env}-#{name}"
     template:
-      name: "#{cloudfrontFormat "#{flowName}-#{name}"}Lambda"
+      name: "#{cloudfrontFormat name}Lambda"
       bucket: description.environmentVariables.starBucket
-      path: "#{flowName}/lambdas/#{name}"
+      path: path
     "function":
       name: lambdaName
       arn: "arn:aws:lambda:#{description.aws.region}:#{description.accountID}:function:#{lambdaName}"
@@ -26,11 +26,12 @@ Flows = (description) ->
     paths = await ls resolve process.cwd(),
       "src", "flows", flowName, "lambdas"
     for path in paths
-      {name} = parse path
-      lambda = defineLambda flowName, name
+      scopedName = (parse path).name
+      name = "#{flowName}-#{scopedName}"
+      lambda = defineLambda name, "#{flowName}/lambdas/#{scopedName}"
       description.environment.lambdas[name] = lambda
-      if flow.States[name]?.Resource == "stardust"
-        flow.States[name].Resource = lambda.function.arn
+      if flow.States[scopedName]?.Resource == "stardust"
+        flow.States[scopedName].Resource = lambda.function.arn
 
     description.environment.flows[flowName] =
       do (name = undefined) ->

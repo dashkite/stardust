@@ -42,6 +42,7 @@ Statements = (config) ->
       Action: [
         "states:ListStateMachines"
       ]
+      Resource: ["*"]
     }
   ]
 
